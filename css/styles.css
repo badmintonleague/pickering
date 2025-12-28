@@ -8,6 +8,7 @@ body {
 .top-bar {
   position: sticky;
   top: 0;
+  z-index: 10; 
   background: #0b6e4f;
   color: white;
   padding: 12px 16px;
@@ -47,14 +48,25 @@ main {
 
 #menu {
   position: fixed;
-  top: 0;
+  top: 56px;              /* height of header */
   right: 0;
   width: 200px;
-  height: 100%;
+  height: calc(100% - 56px);
   background: white;
   box-shadow: -2px 0 6px rgba(0,0,0,0.2);
   padding: 20px;
+  z-index: 5;             /* BELOW header */
 }
+
+#menu a {
+  display: block;
+  margin-bottom: 12px;
+  color: #0b6e4f;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+
 
 .hidden {
   display: none;
