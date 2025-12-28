@@ -39,6 +39,26 @@
     <button class="cancel-btn" onclick="closeModal()">Cancel</button>
   </div>
 
+  <!-- COMPLETE TOURNAMENT MODAL -->
+  <div id="completeBackdrop" class="modal-backdrop hidden"></div>
+  
+  <div id="completeModal" class="modal hidden">
+    <h2>Complete Tournament?</h2>
+    <p>
+      This will mark the tournament as complete.<br>
+      All game scores will be finalized.
+    </p>
+  
+    <button class="submit-btn" onclick="confirmCompleteTournament()">
+      Complete Tournament
+    </button>
+  
+    <button class="cancel-btn" onclick="closeCompleteModal()">
+      Go Back
+    </button>
+  </div>
+
+
   <script src="js/api.js"></script>
   <script src="js/tournaments.js"></script>
 </body>
