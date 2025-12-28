@@ -133,6 +133,11 @@ main {
   margin-top: 12px;
 }
 
+.submit-btn:disabled {
+  opacity: 0.5;
+}
+
+
 .cancel-btn {
   width: 100%;
   padding: 10px;
