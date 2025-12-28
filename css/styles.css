@@ -170,7 +170,7 @@ main {
 
 .cancel-tournament-btn {
   width: 100%;
-  margin-top: 8px;
+  margin-top: 12px;
   padding: 12px;
   background: #b91c1c; /* neutral gray */
   color: white;
@@ -183,7 +183,7 @@ main {
   width: 100%;
   margin-bottom: 16px;
   padding: 12px;
-  background: #0b6e4f;
+  background: #6b7280;
   color: white;
   border-radius: 8px;
   font-weight: bold;
