@@ -91,15 +91,17 @@ let CURRENT = {
     });
 
     const buttonRow = document.createElement("div");
+    buttonRow.className = "tournament-actions";
+
 
     const cancelBtn = document.createElement("button");
     cancelBtn.className = "cancel-tournament-btn";
-    cancelBtn.innerText = "Cancel Tournament";
+    cancelBtn.innerText = "Cancel";
     cancelBtn.onclick = () => openCancelModal(t.tournamentId);
     
     const completeBtn = document.createElement("button");
     completeBtn.className = "complete-btn";
-    completeBtn.innerText = "Complete Tournament";
+    completeBtn.innerText = "Complete";
     completeBtn.onclick = () => openCompleteModal(t.tournamentId);
     
     buttonRow.appendChild(cancelBtn);
