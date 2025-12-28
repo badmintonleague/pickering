@@ -4,7 +4,8 @@ let CURRENT = {
   tournamentId: null,
   gameNumber: null,
   scoreA: 0,
-  scoreB: 0
+  scoreB: 0,
+  completeTournamentId: null
 };
 
 (async function render() {
@@ -31,7 +32,8 @@ let CURRENT = {
 
     t.games.forEach(g => {
       const gameDiv = document.createElement("div");
-      gameDiv.className = "game-card" + (g.gameNumber === t.currentGame ? " current" : "");
+      gameDiv.className =
+        "game-card" + (g.gameNumber === t.currentGame ? " current" : "");
 
       const team1 = g.team1.map(id => players[id]).join(" + ");
       const team2 = g.team2.map(id => players[id]).join(" + ");
@@ -42,19 +44,26 @@ let CURRENT = {
         ${team1} vs ${team2}${score}
       `;
 
-      gameDiv.onclick = () => openModal(t, g, team1, team2);
+      gameDiv.onclick = () => openScoreModal(t, g, team1, team2);
       tCard.appendChild(gameDiv);
     });
 
+    // ✅ COMPLETE BUTTON
+    const completeBtn = document.createElement("button");
+    completeBtn.className = "complete-btn";
+    completeBtn.innerText = "Complete Tournament";
+    completeBtn.onclick = () => openCompleteModal(t.tournamentId);
+
+    tCard.appendChild(completeBtn);
     container.appendChild(tCard);
   });
 })();
 
-/***************
- * MODAL LOGIC
- ***************/
+/****************
+ * SCORE MODAL
+ ****************/
 
-function openModal(tournament, game, team1, team2) {
+function openScoreModal(tournament, game, team1, team2) {
   CURRENT.tournamentId = tournament.tournamentId;
   CURRENT.gameNumber = game.gameNumber;
   CURRENT.scoreA = game.scoreTeam1 || 0;
@@ -97,5 +106,30 @@ async function saveScore() {
   });
 
   closeModal();
-  location.reload(); // simple + safe for now
+  location.reload();
+}
+
+/***********************
+ * COMPLETE TOURNAMENT
+ ***********************/
+
+function openCompleteModal(tournamentId) {
+  CURRENT.completeTournamentId = tournamentId;
+  document.getElementById("completeBackdrop").classList.remove("hidden");
+  document.getElementById("completeModal").classList.remove("hidden");
+}
+
+function closeCompleteModal() {
+  document.getElementById("completeBackdrop").classList.add("hidden");
+  document.getElementById("completeModal").classList.add("hidden");
+}
+
+async function confirmCompleteTournament() {
+  await apiPost({
+    action: "completeTournament",
+    tournamentId: CURRENT.completeTournamentId
+  });
+
+  closeCompleteModal();
+  location.reload();
 }
