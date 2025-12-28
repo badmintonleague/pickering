@@ -22,6 +22,21 @@ body {
   margin: 0;
 }
 
+.top-bar a {
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+}
+
+.top-bar a:visited {
+  color: white;
+}
+
+.top-bar a:hover {
+  opacity: 0.8;
+}
+
+
 button {
   background: none;
   border: none;
