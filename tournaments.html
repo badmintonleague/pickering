@@ -76,6 +76,25 @@
     </button>
   </div>
 
+  <!-- CANCEL TOURNAMENT MODAL -->
+  <div id="cancelBackdrop" class="modal-backdrop hidden"></div>
+  
+  <div id="cancelModal" class="modal hidden">
+    <h2>Cancel Tournament?</h2>
+    <p>
+      This will permanently delete this tournament and all its games.
+    </p>
+  
+    <button class="submit-btn" onclick="confirmCancelTournament()">
+      Cancel Tournament
+    </button>
+  
+    <button class="cancel-btn" onclick="closeCancelModal()">
+      Go Back
+    </button>
+  </div>
+
+
 
   <script src="js/api.js"></script>
   <script src="js/tournaments.js"></script>
