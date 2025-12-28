@@ -21,3 +21,10 @@ apiGet("getRankings").then(data => {
       leaderboardEl.appendChild(card);
     });
 });
+
+const tournamentsLink = document.getElementById("tournamentsLink");
+
+tournamentsLink.onclick = () => {
+  menu.classList.add("hidden"); // close menu before navigation
+};
+
