@@ -32,8 +32,8 @@ let CURRENT = {
 
   if (active.length === 0) {
     container.innerHTML += "<p>No active tournaments.</p>";
-    return;
   }
+
 
   active.forEach(t => {
     const tCard = document.createElement("div");
