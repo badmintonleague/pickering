@@ -55,14 +55,31 @@ let CURRENT = {
       gameDiv.className =
         "game-card" + (g.gameNumber === t.currentGame ? " current" : "");
 
-      const team1 = g.team1.map(id => players[id]).join(" + ");
-      const team2 = g.team2.map(id => players[id]).join(" + ");
-      const score = g.scoreTeam1 ? ` — ${g.scoreTeam1}:${g.scoreTeam2}` : "";
-
+      const team1Names = g.team1.map(id => players[id]).join(" + ");
+      const team2Names = g.team2.map(id => players[id]).join(" + ");
+      
+      const hasScore = g.scoreTeam1 || g.scoreTeam2;
+      const team1Won = hasScore && g.scoreTeam1 > g.scoreTeam2;
+      const team2Won = hasScore && g.scoreTeam2 > g.scoreTeam1;
+      
+      if (hasScore) {
+        gameDiv.classList.add("completed");
+      }
+      
       gameDiv.innerHTML = `
-        Game ${g.gameNumber}<br>
-        ${team1} vs ${team2}${score}
+        <div>Game ${g.gameNumber}</div>
+        <div>
+          <span class="team ${team1Won ? "winner" : ""}">
+            ${team1Names}
+          </span>
+          vs
+          <span class="team ${team2Won ? "winner" : ""}">
+            ${team2Names}
+          </span>
+          ${hasScore ? ` — ${g.scoreTeam1}:${g.scoreTeam2}` : ""}
+        </div>
       `;
+
 
       gameDiv.onclick = () => openScoreModal(t, g, team1, team2);
       tCard.appendChild(gameDiv);
