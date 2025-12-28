@@ -36,9 +36,9 @@ menuBtn.onclick = () => menu.classList.toggle("hidden");
 
       card.innerHTML = `
         <strong>#${i + 1} ${name}</strong><br>
-        Win%: ${(p.winPct * 100).toFixed(1)}%<br>
+        Win PCT: ${(p.winPct * 100).toFixed(1)}%<br>
         GP: ${p.gamesPlayed}<br>
-        PF: ${p.pf} | PA: ${p.pa}
+        <!-- PF: ${p.pf} | PA: ${p.pa} -->
       `;
 
       card.addEventListener("click", () => openPlayerModal(p));
