@@ -138,3 +138,14 @@ main {
   font-weight: bold;
 }
 
+.start-btn {
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #0b6e4f;
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+
