@@ -5,7 +5,9 @@ let CURRENT = {
   gameNumber: null,
   scoreA: 0,
   scoreB: 0,
-  completeTournamentId: null
+  completeTournamentId: null,
+  cancelTournamentId: null
+
 };
 
 /****************
@@ -88,12 +90,23 @@ let CURRENT = {
       tCard.appendChild(gameDiv);
     });
 
+    const buttonRow = document.createElement("div");
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.className = "cancel-tournament-btn";
+    cancelBtn.innerText = "Cancel Tournament";
+    cancelBtn.onclick = () => openCancelModal(t.tournamentId);
+    
     const completeBtn = document.createElement("button");
     completeBtn.className = "complete-btn";
     completeBtn.innerText = "Complete Tournament";
     completeBtn.onclick = () => openCompleteModal(t.tournamentId);
+    
+    buttonRow.appendChild(cancelBtn);
+    buttonRow.appendChild(completeBtn);
+    
+    tCard.appendChild(buttonRow);
 
-    tCard.appendChild(completeBtn);
     container.appendChild(tCard);
   });
 })();
@@ -265,3 +278,26 @@ async function confirmCompleteTournament() {
   closeCompleteModal();
   location.reload();
 }
+
+
+function openCancelModal(tournamentId) {
+  CURRENT.cancelTournamentId = tournamentId;
+  document.getElementById("cancelBackdrop").classList.remove("hidden");
+  document.getElementById("cancelModal").classList.remove("hidden");
+}
+
+function closeCancelModal() {
+  document.getElementById("cancelBackdrop").classList.add("hidden");
+  document.getElementById("cancelModal").classList.add("hidden");
+}
+
+async function confirmCancelTournament() {
+  await apiPost({
+    action: "cancelTournament",
+    tournamentId: CURRENT.cancelTournamentId
+  });
+
+  closeCancelModal();
+  location.reload();
+}
+
