@@ -193,6 +193,25 @@ main {
   font-weight: bold;
 }
 
+.success-btn {
+  width: 100%;
+  padding: 12px;
+  background: #0b6e4f;   /* green */
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.danger-btn {
+  width: 100%;
+  padding: 12px;
+  background: #b91c1c;   /* red */
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+
 
 .start-btn {
   width: 100%;
