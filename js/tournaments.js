@@ -81,7 +81,10 @@ let CURRENT = {
       `;
 
 
-      gameDiv.onclick = () => openScoreModal(t, g, team1, team2);
+      gameDiv.addEventListener("click", () => {
+        openScoreModal(t, g, team1Names, team2Names);
+      });
+
       tCard.appendChild(gameDiv);
     });
 
