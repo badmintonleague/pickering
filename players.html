@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Players</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="top-bar">
+    <h1>Players</h1>
+    <button id="menuBtn">☰</button>
+  </header>
+
+  <main id="players">
+    <p class="loading">Loading players…</p>
+  </main>
+
+  <nav id="menu" class="hidden">
+    <a href="leaderboard.html">Leaderboard</a>
+    <a href="tournaments.html">Tournaments</a>
+    <a href="players.html">Players</a>
+  </nav>
+
+  <script src="js/api.js"></script>
+
+  <script>
+    const menuBtn = document.getElementById("menuBtn");
+    const menu = document.getElementById("menu");
+    menuBtn.onclick = () => menu.classList.toggle("hidden");
+
+    (async function () {
+      const players = await loadPlayers();
+      const container = document.getElementById("players");
+      container.innerHTML = "";
+
+      Object.entries(players).forEach(([id, name]) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `<strong>${name}</strong>`;
+        container.appendChild(card);
+      });
+    })();
+  </script>
+</body>
+</html>
