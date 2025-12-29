@@ -47,7 +47,7 @@ let CURRENT = {
     const allGamesComplete = t.currentGame > t.games.length;
 
     tCard.innerHTML = `
-      <strong>Tournament ${t.tournamentId}</strong><br>
+      <strong>Tournament ID: ${t.tournamentId}</strong><br>
       ${
         allGamesComplete
           ? "<span style='color:green;font-weight:bold;'>All Games Complete</span>"
