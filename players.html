@@ -13,8 +13,41 @@
   </header>
 
   <main id="players">
+    <button class="start-btn" id="addPlayerBtn">+ Add Player</button>
     <p class="loading">Loading players…</p>
   </main>
+
+  <!-- ADD PLAYER MODAL -->
+  <div id="addPlayerBackdrop" class="modal-backdrop hidden"></div>
+
+  <div id="addPlayerModal" class="modal hidden">
+    <h2>Add Player</h2>
+
+    <label>
+      Name
+      <input
+        id="playerNameInput"
+        type="text"
+        placeholder="Enter player name"
+        style="width:100%; padding:8px; margin:8px 0;"
+      />
+    </label>
+
+    <label>
+      Gender
+      <select
+        id="playerGenderInput"
+        style="width:100%; padding:8px; margin-bottom:12px;"
+      >
+        <option value="">Select gender</option>
+        <option value="M">M</option>
+        <option value="F">F</option>
+      </select>
+    </label>
+
+    <button class="submit-btn" onclick="submitAddPlayer()">Add Player</button>
+    <button class="cancel-btn" onclick="closeAddPlayerModal()">Cancel</button>
+  </div>
 
   <nav id="menu" class="hidden">
     <a href="leaderboard.html">Leaderboard</a>
@@ -25,14 +58,21 @@
   <script src="js/api.js"></script>
 
   <script>
+    /* MENU TOGGLE */
     const menuBtn = document.getElementById("menuBtn");
     const menu = document.getElementById("menu");
     menuBtn.onclick = () => menu.classList.toggle("hidden");
 
-    (async function () {
+    const container = document.getElementById("players");
+    const addBtn = document.getElementById("addPlayerBtn");
+
+    addBtn.onclick = openAddPlayerModal;
+
+    /* LOAD PLAYERS */
+    async function loadPlayerList() {
       const players = await loadPlayers();
-      const container = document.getElementById("players");
       container.innerHTML = "";
+      container.appendChild(addBtn);
 
       Object.entries(players).forEach(([id, name]) => {
         const card = document.createElement("div");
@@ -40,7 +80,55 @@
         card.innerHTML = `<strong>${name}</strong>`;
         container.appendChild(card);
       });
-    })();
+    }
+
+    loadPlayerList();
+
+    /* MODAL CONTROL */
+    function openAddPlayerModal() {
+      document.getElementById("playerNameInput").value = "";
+      document.getElementById("playerGenderInput").value = "";
+      document.getElementById("addPlayerBackdrop").classList.remove("hidden");
+      document.getElementById("addPlayerModal").classList.remove("hidden");
+    }
+
+    function closeAddPlayerModal() {
+      document.getElementById("addPlayerBackdrop").classList.add("hidden");
+      document.getElementById("addPlayerModal").classList.add("hidden");
+    }
+
+    /* SUBMIT */
+    async function submitAddPlayer() {
+      const name = document.getElementById("playerNameInput").value.trim();
+      const gender = document.getElementById("playerGenderInput").value;
+
+      if (!name) {
+        alert("Please enter a name.");
+        return;
+      }
+
+      if (gender !== "M" && gender !== "F") {
+        alert("Please select gender M or F.");
+        return;
+      }
+
+      const res = await apiPost({
+        action: "addPlayer",
+        name,
+        gender
+      });
+
+      if (res.error) {
+        alert(res.error);
+        return;
+      }
+
+      // Clear cached player map so reload fetches fresh data
+      PLAYER_MAP = null;
+
+      closeAddPlayerModal();
+      loadPlayerList();
+    }
   </script>
 </body>
 </html>
