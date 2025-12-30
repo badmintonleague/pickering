@@ -19,7 +19,7 @@ let CURRENT = {
 
   container.innerHTML = "";
 
-  // ✅ START TOURNAMENT BUTTON
+  // START TOURNAMENT BUTTON
   const startBtn = document.createElement("button");
   startBtn.className = "start-btn";
   startBtn.innerText = "+ Start New Tournament";
@@ -43,7 +43,6 @@ let CURRENT = {
 
     const allGamesComplete = t.currentGame > t.games.length;
 
-    // 🔹 HEADER ROW WITH STATS BUTTON
     tCard.innerHTML = `
       <div class="tournament-header">
         <strong>Tournament ID: ${t.tournamentId}</strong>
@@ -60,13 +59,12 @@ let CURRENT = {
       <br>
     `;
 
-    // 🔹 STATS TOGGLE LOGIC
+    // STATS TOGGLE
     const statsBtn = tCard.querySelector(".stats-btn");
     const statsContainer = tCard.querySelector(".tournament-stats");
 
     statsBtn.onclick = () => {
       const isHidden = statsContainer.classList.contains("hidden");
-
       statsContainer.classList.toggle("hidden");
       statsBtn.innerText = isHidden ? "Hide Stats ▴" : "Stats ▾";
 
@@ -75,7 +73,7 @@ let CURRENT = {
       }
     };
 
-    // 🔹 GAME LIST
+    // GAMES
     t.games.forEach(g => {
       const gameDiv = document.createElement("div");
       gameDiv.className =
@@ -104,14 +102,13 @@ let CURRENT = {
         </div>
       `;
 
-      gameDiv.addEventListener("click", () => {
+      gameDiv.onclick = () =>
         openScoreModal(t, g, team1Names, team2Names);
-      });
 
       tCard.appendChild(gameDiv);
     });
 
-    // 🔹 ACTION BUTTONS
+    // ACTION BUTTONS
     const buttonRow = document.createElement("div");
     buttonRow.className = "tournament-actions";
 
@@ -177,10 +174,18 @@ function renderTournamentStats(tournament, players, container) {
     .forEach(([pid, s]) => {
       const row = document.createElement("div");
       row.className = "player-stat";
+
       row.innerHTML = `
-        <span><strong>${players[pid]}</strong></span>
-        <span>GP ${s.gp} · W ${s.w} · L ${s.l} · PF ${s.pf} · PA ${s.pa}</span>
+        <div class="stat-name">${players[pid]}</div>
+        <div class="stat-row">
+          <div><span>GP</span><strong>${s.gp}</strong></div>
+          <div><span>W</span><strong>${s.w}</strong></div>
+          <div><span>L</span><strong>${s.l}</strong></div>
+          <div><span>PF</span><strong>${s.pf}</strong></div>
+          <div><span>PA</span><strong>${s.pa}</strong></div>
+        </div>
       `;
+
       container.appendChild(row);
     });
 }
