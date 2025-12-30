@@ -49,11 +49,7 @@ let CURRENT = {
         <button class="stats-btn">Stats ▾</button>
       </div>
 
-      ${ 
-        allGamesComplete
-          ? "<span style='color:green;font-weight:bold;'>All Games Complete</span>"
-          : `Current Game: ${t.currentGame}`
-      }
+      ${""}
 
       <div class="tournament-stats hidden"></div>
       <br>
