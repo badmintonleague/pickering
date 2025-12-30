@@ -7,7 +7,6 @@ let CURRENT = {
   scoreB: 0,
   completeTournamentId: null,
   cancelTournamentId: null
-
 };
 
 /****************
@@ -25,7 +24,6 @@ let CURRENT = {
   startBtn.className = "start-btn";
   startBtn.innerText = "+ Start New Tournament";
   startBtn.onclick = () => openStartModal(players, data);
-
   container.appendChild(startBtn);
 
   const active = data.filter(t => t.status === "active");
@@ -36,9 +34,8 @@ let CURRENT = {
     msg.style.color = "#777";
     msg.style.textAlign = "center";
     container.appendChild(msg);
+    return;
   }
-
-
 
   active.forEach(t => {
     const tCard = document.createElement("div");
@@ -46,17 +43,39 @@ let CURRENT = {
 
     const allGamesComplete = t.currentGame > t.games.length;
 
+    // 🔹 HEADER ROW WITH STATS BUTTON
     tCard.innerHTML = `
-      <strong>Tournament ID: ${t.tournamentId}</strong><br>
+      <div class="tournament-header">
+        <strong>Tournament ID: ${t.tournamentId}</strong>
+        <button class="stats-btn">Stats ▾</button>
+      </div>
+
       ${
         allGamesComplete
           ? "<span style='color:green;font-weight:bold;'>All Games Complete</span>"
           : `Current Game: ${t.currentGame}`
       }
-      <br><br>
+
+      <div class="tournament-stats hidden"></div>
+      <br>
     `;
 
+    // 🔹 STATS TOGGLE LOGIC
+    const statsBtn = tCard.querySelector(".stats-btn");
+    const statsContainer = tCard.querySelector(".tournament-stats");
 
+    statsBtn.onclick = () => {
+      const isHidden = statsContainer.classList.contains("hidden");
+
+      statsContainer.classList.toggle("hidden");
+      statsBtn.innerText = isHidden ? "Hide Stats ▴" : "Stats ▾";
+
+      if (isHidden && statsContainer.innerHTML === "") {
+        renderTournamentStats(t, players, statsContainer);
+      }
+    };
+
+    // 🔹 GAME LIST
     t.games.forEach(g => {
       const gameDiv = document.createElement("div");
       gameDiv.className =
@@ -64,15 +83,13 @@ let CURRENT = {
 
       const team1Names = g.team1.map(id => players[id]).join(" + ");
       const team2Names = g.team2.map(id => players[id]).join(" + ");
-      
+
       const hasScore = g.scoreTeam1 || g.scoreTeam2;
       const team1Won = hasScore && g.scoreTeam1 > g.scoreTeam2;
       const team2Won = hasScore && g.scoreTeam2 > g.scoreTeam1;
-      
-      if (hasScore) {
-        gameDiv.classList.add("completed");
-      }
-      
+
+      if (hasScore) gameDiv.classList.add("completed");
+
       gameDiv.innerHTML = `
         <div>Game ${g.gameNumber}</div>
         <div>
@@ -87,7 +104,6 @@ let CURRENT = {
         </div>
       `;
 
-
       gameDiv.addEventListener("click", () => {
         openScoreModal(t, g, team1Names, team2Names);
       });
@@ -95,28 +111,79 @@ let CURRENT = {
       tCard.appendChild(gameDiv);
     });
 
+    // 🔹 ACTION BUTTONS
     const buttonRow = document.createElement("div");
     buttonRow.className = "tournament-actions";
-
 
     const cancelBtn = document.createElement("button");
     cancelBtn.className = "cancel-tournament-btn";
     cancelBtn.innerText = "Cancel";
     cancelBtn.onclick = () => openCancelModal(t.tournamentId);
-    
+
     const completeBtn = document.createElement("button");
     completeBtn.className = "complete-btn";
     completeBtn.innerText = "Complete";
     completeBtn.onclick = () => openCompleteModal(t.tournamentId);
-    
+
     buttonRow.appendChild(cancelBtn);
     buttonRow.appendChild(completeBtn);
-    
     tCard.appendChild(buttonRow);
 
     container.appendChild(tCard);
   });
 })();
+
+/***********************
+ * TOURNAMENT STATS
+ ***********************/
+
+function renderTournamentStats(tournament, players, container) {
+  const stats = {};
+
+  tournament.games.forEach(g => {
+    if (!g.scoreTeam1 && !g.scoreTeam2) return;
+
+    const team1 = g.team1;
+    const team2 = g.team2;
+    const scoreA = g.scoreTeam1;
+    const scoreB = g.scoreTeam2;
+
+    [...team1, ...team2].forEach(p => {
+      if (!stats[p]) stats[p] = { gp: 0, w: 0, l: 0, pf: 0, pa: 0 };
+      stats[p].gp++;
+    });
+
+    if (scoreA > scoreB) {
+      team1.forEach(p => stats[p].w++);
+      team2.forEach(p => stats[p].l++);
+    } else {
+      team2.forEach(p => stats[p].w++);
+      team1.forEach(p => stats[p].l++);
+    }
+
+    team1.forEach(p => {
+      stats[p].pf += scoreA;
+      stats[p].pa += scoreB;
+    });
+
+    team2.forEach(p => {
+      stats[p].pf += scoreB;
+      stats[p].pa += scoreA;
+    });
+  });
+
+  Object.entries(stats)
+    .sort((a, b) => b[1].w - a[1].w)
+    .forEach(([pid, s]) => {
+      const row = document.createElement("div");
+      row.className = "player-stat";
+      row.innerHTML = `
+        <span><strong>${players[pid]}</strong></span>
+        <span>GP ${s.gp} · W ${s.w} · L ${s.l} · PF ${s.pf} · PA ${s.pa}</span>
+      `;
+      container.appendChild(row);
+    });
+}
 
 /****************
  * START TOURNAMENT
@@ -145,13 +212,12 @@ function openStartModal(players, tournaments) {
       "#playerSelect input[type=checkbox]:checked"
     ).length;
 
-    if (checked === 0) {
-      createBtn.innerText = "Create Tournament";
-      createBtn.disabled = true;
-    } else {
-      createBtn.innerText = `Create Tournament (${checked} players)`;
-      createBtn.disabled = checked < 4;
-    }
+    createBtn.innerText =
+      checked === 0
+        ? "Create Tournament"
+        : `Create Tournament (${checked} players)`;
+
+    createBtn.disabled = checked < 4;
   }
 
   Object.entries(players).forEach(([id, name]) => {
@@ -167,9 +233,7 @@ function openStartModal(players, tournaments) {
       </label>
     `;
 
-    const checkbox = row.querySelector("input");
-    checkbox.addEventListener("change", updateButton);
-
+    row.querySelector("input").addEventListener("change", updateButton);
     list.appendChild(row);
   });
 
@@ -178,7 +242,6 @@ function openStartModal(players, tournaments) {
   document.getElementById("startBackdrop").classList.remove("hidden");
   document.getElementById("startModal").classList.remove("hidden");
 }
-
 
 function closeStartModal() {
   document.getElementById("startBackdrop").classList.add("hidden");
@@ -197,10 +260,7 @@ async function createTournament() {
     return;
   }
 
-  const res = await apiPost({
-    action: "startTournament",
-    playerIds
-  });
+  const res = await apiPost({ action: "startTournament", playerIds });
 
   if (res.error) {
     alert(res.error);
@@ -221,10 +281,8 @@ function openScoreModal(tournament, game, team1, team2) {
   CURRENT.scoreA = game.scoreTeam1 || 0;
   CURRENT.scoreB = game.scoreTeam2 || 0;
 
-  document.getElementById("modalTitle").innerText =
-    `Game ${game.gameNumber}`;
-  document.getElementById("modalTeams").innerText =
-    `${team1} vs ${team2}`;
+  document.getElementById("modalTitle").innerText = `Game ${game.gameNumber}`;
+  document.getElementById("modalTeams").innerText = `${team1} vs ${team2}`;
 
   document.getElementById("scoreA").innerText = CURRENT.scoreA;
   document.getElementById("scoreB").innerText = CURRENT.scoreB;
@@ -262,7 +320,7 @@ async function saveScore() {
 }
 
 /***********************
- * COMPLETE TOURNAMENT
+ * COMPLETE / CANCEL
  ***********************/
 
 function openCompleteModal(tournamentId) {
@@ -286,7 +344,6 @@ async function confirmCompleteTournament() {
   location.reload();
 }
 
-
 function openCancelModal(tournamentId) {
   CURRENT.cancelTournamentId = tournamentId;
   document.getElementById("cancelBackdrop").classList.remove("hidden");
@@ -307,4 +364,3 @@ async function confirmCancelTournament() {
   closeCancelModal();
   location.reload();
 }
-
