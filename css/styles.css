@@ -361,10 +361,15 @@ main {
 /* ---------- PLAYER MODAL FIXED HEIGHT ---------- */
 
 #playerModal {
-  max-height: 80vh;               /* prevents jumping */
-  display: flex;
+  max-height: 80vh;
   flex-direction: column;
 }
+
+/* only display the modal when it is NOT hidden */
+#playerModal:not(.hidden) {
+  display: flex;
+}
+
 
 /* stats + partners panels scroll internally */
 #playerStats,
