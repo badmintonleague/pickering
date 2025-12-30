@@ -23,7 +23,14 @@
   <div id="startModal" class="modal hidden">
     <h2>Start New Tournament</h2>
     <div id="playerSelect" style="max-height:300px; overflow-y:auto;"></div>
-    <button class="submit-btn" onclick="createTournament()">Create Tournament</button>
+    <button
+        id="createTournamentBtn"
+        class="submit-btn"
+        onclick="createTournament()"
+      >
+        Create Tournament
+      </button>
+
     <button class="cancel-btn" onclick="closeStartModal()">Cancel</button>
   </div>
 
