@@ -18,11 +18,7 @@ menuBtn.onclick = () => menu.classList.toggle("hidden");
   STATS
     .sort((a, b) => b.winPct - a.winPct)
     .forEach((p, i) => {
-      const player = PLAYERS[p.playerId];
-      const name =
-        typeof player === "string"
-          ? player
-          : player?.name || `Player ${p.playerId}`;
+      const name = PLAYERS[p.playerId];
 
       const card = document.createElement("div");
       card.className = "card";
@@ -51,26 +47,19 @@ function openPlayerModal(playerStat) {
   const player = PLAYERS[playerStat.playerId];
   if (!player) return;
 
-  const gender = typeof player === "string" ? null : player.gender;
-  const name = typeof player === "string" ? player : player.name;
+  document.getElementById("playerName").innerText = player;
+  document.getElementById("playerEmoji").innerText = "";
 
-  document.getElementById("playerName").innerText = name;
-  document.getElementById("playerEmoji").innerText =
-    gender === "M" ? "♂️" : gender === "F" ? "♀️" : "";
-
-  // Tabs
   const tabStats = document.getElementById("tabStats");
   const tabPartners = document.getElementById("tabPartners");
   const statsEl = document.getElementById("playerStats");
   const partnersEl = document.getElementById("playerPartners");
 
-  // Default tab
   tabStats.classList.add("active");
   tabPartners.classList.remove("active");
   statsEl.classList.remove("hidden");
   partnersEl.classList.add("hidden");
 
-  // Stats content (existing)
   statsEl.innerHTML = `
     <div class="player-stat"><span>Games Played</span><span>${playerStat.gamesPlayed}</span></div>
     <div class="player-stat"><span>Wins</span><span>${playerStat.wins}</span></div>
@@ -80,10 +69,8 @@ function openPlayerModal(playerStat) {
     <div class="player-stat"><span>Points Against</span><span>${playerStat.pa}</span></div>
   `;
 
-  // Partners content
   partnersEl.innerHTML = renderPartnerStats(playerStat.playerId);
 
-  // Tab handlers
   tabStats.onclick = () => {
     tabStats.classList.add("active");
     tabPartners.classList.remove("active");
@@ -108,7 +95,7 @@ function closePlayerModal() {
 }
 
 /********************
- * PARTNER STATS
+ * PARTNER + OPPONENT STATS
  ********************/
 
 function renderPartnerStats(playerId) {
@@ -119,44 +106,41 @@ function renderPartnerStats(playerId) {
     t.games.forEach(g => {
       if (g.scoreTeam1 == null || g.scoreTeam2 == null) return;
 
-      const teamA = g.team1;
-      const teamB = g.team2;
-      const scoreA = g.scoreTeam1;
-      const scoreB = g.scoreTeam2;
+      const { team1, team2, scoreTeam1, scoreTeam2 } = g;
 
-      // ----- PARTNERS -----
-      if (teamA.includes(playerId)) {
-        const partnerId = teamA.find(p => p !== playerId);
-        if (partnerId) {
-          partners[partnerId] ??= { gp: 0, w: 0, l: 0 };
-          partners[partnerId].gp++;
-          scoreA > scoreB ? partners[partnerId].w++ : partners[partnerId].l++;
+      // ---- PARTNERS ----
+      if (team1.includes(playerId)) {
+        const partner = team1.find(p => p !== playerId);
+        if (partner) {
+          partners[partner] ??= { gp: 0, w: 0, l: 0 };
+          partners[partner].gp++;
+          scoreTeam1 > scoreTeam2 ? partners[partner].w++ : partners[partner].l++;
         }
       }
 
-      if (teamB.includes(playerId)) {
-        const partnerId = teamB.find(p => p !== playerId);
-        if (partnerId) {
-          partners[partnerId] ??= { gp: 0, w: 0, l: 0 };
-          partners[partnerId].gp++;
-          scoreB > scoreA ? partners[partnerId].w++ : partners[partnerId].l++;
+      if (team2.includes(playerId)) {
+        const partner = team2.find(p => p !== playerId);
+        if (partner) {
+          partners[partner] ??= { gp: 0, w: 0, l: 0 };
+          partners[partner].gp++;
+          scoreTeam2 > scoreTeam1 ? partners[partner].w++ : partners[partner].l++;
         }
       }
 
-      // ----- OPPONENTS -----
-      if (teamA.includes(playerId)) {
-        teamB.forEach(oppId => {
-          opponents[oppId] ??= { gp: 0, l: 0 };
-          opponents[oppId].gp++;
-          if (scoreA < scoreB) opponents[oppId].l++;
+      // ---- OPPONENTS ----
+      if (team1.includes(playerId)) {
+        team2.forEach(opp => {
+          opponents[opp] ??= { gp: 0, w: 0, l: 0 };
+          opponents[opp].gp++;
+          scoreTeam1 > scoreTeam2 ? opponents[opp].w++ : opponents[opp].l++;
         });
       }
 
-      if (teamB.includes(playerId)) {
-        teamA.forEach(oppId => {
-          opponents[oppId] ??= { gp: 0, l: 0 };
-          opponents[oppId].gp++;
-          if (scoreB < scoreA) opponents[oppId].l++;
+      if (team2.includes(playerId)) {
+        team1.forEach(opp => {
+          opponents[opp] ??= { gp: 0, w: 0, l: 0 };
+          opponents[opp].gp++;
+          scoreTeam2 > scoreTeam1 ? opponents[opp].w++ : opponents[opp].l++;
         });
       }
     });
@@ -166,19 +150,22 @@ function renderPartnerStats(playerId) {
     .filter(([_, s]) => s.gp >= 2)
     .map(([pid, s]) => ({
       name: PLAYERS[pid],
-      ...s,
-      winPct: s.w / s.gp
+      w: s.w,
+      l: s.l,
+      pct: s.w / s.gp
     }))
-    .sort((a, b) => b.winPct - a.winPct)
+    .sort((a, b) => b.pct - a.pct)
     .slice(0, 3);
 
   const toughestOpponents = Object.entries(opponents)
     .filter(([_, s]) => s.gp >= 2 && s.l > 0)
     .map(([pid, s]) => ({
       name: PLAYERS[pid],
-      lossRate: s.l / s.gp
+      w: s.w,
+      l: s.l,
+      lossPct: s.l / s.gp
     }))
-    .sort((a, b) => b.lossRate - a.lossRate)
+    .sort((a, b) => b.lossPct - a.lossPct)
     .slice(0, 3);
 
   let html = `<h3 class="partners-title">Favourite Partners</h3>`;
@@ -187,7 +174,7 @@ function renderPartnerStats(playerId) {
     ? topPartners.map(p => `
         <div class="player-stat">
           <span><strong>${p.name}</strong></span>
-          <span>${p.w}–${p.l} (${(p.winPct * 100).toFixed(0)}%)</span>
+          <span>${p.w}–${p.l} (${(p.pct * 100).toFixed(0)}%)</span>
         </div>
       `).join("")
     : `<p class="muted">No partner data yet.</p>`;
@@ -198,11 +185,10 @@ function renderPartnerStats(playerId) {
     ? toughestOpponents.map(o => `
         <div class="player-stat">
           <span><strong>${o.name}</strong></span>
-          <span>Loss rate ${(o.lossRate * 100).toFixed(0)}%</span>
+          <span>${o.w}–${o.l} (${(o.lossPct * 100).toFixed(0)}%)</span>
         </div>
       `).join("")
     : `<p class="muted">No opponent data yet.</p>`;
 
   return html;
 }
-
