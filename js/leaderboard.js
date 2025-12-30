@@ -104,7 +104,9 @@ function renderPartnerStats(playerId) {
 
   ALL_TOURNAMENTS.forEach(t => {
     t.games.forEach(g => {
-      if (g.scoreTeam1 == null || g.scoreTeam2 == null) return;
+      if (!Number.isFinite(g.scoreTeam1) || !Number.isFinite(g.scoreTeam2)) return;
+      if (g.scoreTeam1 === g.scoreTeam2) return;
+
 
       const { team1, team2, scoreTeam1, scoreTeam2 } = g;
 
