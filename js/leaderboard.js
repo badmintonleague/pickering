@@ -14,7 +14,6 @@ menuBtn.onclick = () => menu.classList.toggle("hidden");
  ********************/
 
 (async function initLeaderboard() {
-  // 🔥 Load players + rankings in parallel
   const [players, rankings] = await Promise.all([
     loadPlayers(),
     apiGet("getRankings")
@@ -24,7 +23,11 @@ menuBtn.onclick = () => menu.classList.toggle("hidden");
   STATS = rankings;
 
   renderLeaderboard();
+
+  // 🔥 Background prefetch (non-blocking)
+  prefetchTournaments();
 })();
+
 
 /********************
  * RENDER LEADERBOARD
@@ -130,6 +133,22 @@ async function loadTournamentsIfNeeded() {
     TOURNAMENTS_LOADED_AT = now;
   }
 }
+
+
+function prefetchTournaments() {
+  // already loaded or already fetching
+  if (ALL_TOURNAMENTS) return;
+
+  apiGet("getTournaments")
+    .then(data => {
+      ALL_TOURNAMENTS = data;
+      TOURNAMENTS_LOADED_AT = Date.now();
+    })
+    .catch(err => {
+      console.warn("Background tournament prefetch failed", err);
+    });
+}
+
 
 /********************
  * MATCHUP STATS
