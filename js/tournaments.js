@@ -9,13 +9,32 @@ let CURRENT = {
   cancelTournamentId: null
 };
 
+// ✅ FIX #2: tournament cache
+let TOURNAMENT_CACHE = null;
+
+async function getTournamentsCached(force = false) {
+  if (TOURNAMENT_CACHE && !force) return TOURNAMENT_CACHE;
+  TOURNAMENT_CACHE = await apiGet("getTournaments");
+  return TOURNAMENT_CACHE;
+}
+
 /****************
  * RENDER PAGE
  ****************/
 
 async function render() {
-  const players = await loadPlayers();
-  const data = await apiGet("getTournaments");
+  // ✅ FIX #1: instant UI paint
+  container.innerHTML = `
+    <button class="start-btn">+ Start New Tournament</button>
+    <p class="loading">Loading tournaments…</p>
+  `;
+
+  // load in parallel
+  const playersPromise = loadPlayers();
+  const tournamentsPromise = getTournamentsCached();
+
+  const players = await playersPromise;
+  const data = await tournamentsPromise;
 
   container.innerHTML = "";
 
@@ -272,6 +291,7 @@ async function createTournament() {
     if (res.error) throw new Error(res.error);
 
     closeStartModal();
+    await getTournamentsCached(true);
     await render();
 
   } catch (err) {
@@ -301,6 +321,7 @@ async function saveScore() {
     });
 
     closeModal();
+    await getTournamentsCached(true);
     await render();
 
   } catch (err) {
@@ -323,7 +344,6 @@ function openScoreModal(tournament, game, team1, team2) {
   document.getElementById("scoreA").innerText = CURRENT.scoreA;
   document.getElementById("scoreB").innerText = CURRENT.scoreB;
 
-  // ✅ reset save button state
   const saveBtn = document.getElementById("saveScoreBtn");
   saveBtn.disabled = false;
   saveBtn.innerText = "Save Score";
@@ -331,7 +351,6 @@ function openScoreModal(tournament, game, team1, team2) {
   document.getElementById("modalBackdrop").classList.remove("hidden");
   document.getElementById("scoreModal").classList.remove("hidden");
 }
-
 
 function closeModal() {
   document.getElementById("modalBackdrop").classList.add("hidden");
@@ -348,7 +367,6 @@ function changeScore(team, delta) {
   }
 }
 
-
 /***********************
  * COMPLETE / CANCEL
  ***********************/
@@ -360,6 +378,7 @@ async function confirmCompleteTournament() {
   });
 
   closeCompleteModal();
+  await getTournamentsCached(true);
   await render();
 }
 
@@ -370,6 +389,7 @@ async function confirmCancelTournament() {
   });
 
   closeCancelModal();
+  await getTournamentsCached(true);
   await render();
 }
 
