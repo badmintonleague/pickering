@@ -180,7 +180,18 @@ function renderTournamentStats(tournament, players, container) {
   });
 
   Object.entries(stats)
-    .sort((a, b) => b[1].w - a[1].w)
+    .sort((a, b) => {
+      // 1️⃣ Wins
+      if (b[1].w !== a[1].w) {
+        return b[1].w - a[1].w;
+      }
+    
+      // 2️⃣ Point Differential (PF - PA)
+      const diffA = a[1].pf - a[1].pa;
+      const diffB = b[1].pf - b[1].pa;
+      return diffB - diffA;
+    })
+
     .forEach(([pid, s]) => {
       const row = document.createElement("div");
       row.className = "player-stat";
