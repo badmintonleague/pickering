@@ -13,7 +13,7 @@ let CURRENT = {
  * RENDER PAGE
  ****************/
 
-(async function render() {
+async function render() {
   const players = await loadPlayers();
   const data = await apiGet("getTournaments");
 
@@ -41,16 +41,11 @@ let CURRENT = {
     const tCard = document.createElement("div");
     tCard.className = "card";
 
-    const allGamesComplete = t.currentGame > t.games.length;
-
     tCard.innerHTML = `
       <div class="tournament-header">
         <strong>Tournament ID: ${t.tournamentId}</strong>
         <button class="stats-btn">Stats ▾</button>
       </div>
-
-      ${""}
-
       <div class="tournament-stats hidden"></div>
       <br>
     `;
@@ -124,7 +119,7 @@ let CURRENT = {
 
     container.appendChild(tCard);
   });
-})();
+}
 
 /***********************
  * TOURNAMENT STATS
@@ -252,7 +247,6 @@ function closeStartModal() {
 async function createTournament() {
   const btn = document.getElementById("createTournamentBtn");
 
-  // ✅ instant UI feedback
   btn.disabled = true;
   btn.innerText = "Creating…";
 
@@ -264,8 +258,6 @@ async function createTournament() {
 
   if (playerIds.length < 4) {
     alert("Select at least 4 players.");
-
-    // ❌ restore UI
     btn.disabled = false;
     btn.innerText = "Create Tournament";
     return;
@@ -277,63 +269,25 @@ async function createTournament() {
       playerIds
     });
 
-    if (res.error) {
-      alert(res.error);
-      throw new Error(res.error);
-    }
+    if (res.error) throw new Error(res.error);
 
     closeStartModal();
-    location.reload();
+    await render();
 
   } catch (err) {
     console.error(err);
-
-    // ❌ restore UI if backend fails
     btn.disabled = false;
     btn.innerText = "Create Tournament";
   }
 }
 
-
 /****************
  * SCORE MODAL
  ****************/
 
-function openScoreModal(tournament, game, team1, team2) {
-  CURRENT.tournamentId = tournament.tournamentId;
-  CURRENT.gameNumber = game.gameNumber;
-  CURRENT.scoreA = game.scoreTeam1 || 0;
-  CURRENT.scoreB = game.scoreTeam2 || 0;
-
-  document.getElementById("modalTitle").innerText = `Game ${game.gameNumber}`;
-  document.getElementById("modalTeams").innerText = `${team1} vs ${team2}`;
-
-  document.getElementById("scoreA").innerText = CURRENT.scoreA;
-  document.getElementById("scoreB").innerText = CURRENT.scoreB;
-
-  document.getElementById("modalBackdrop").classList.remove("hidden");
-  document.getElementById("scoreModal").classList.remove("hidden");
-}
-
-function closeModal() {
-  document.getElementById("modalBackdrop").classList.add("hidden");
-  document.getElementById("scoreModal").classList.add("hidden");
-}
-
-function changeScore(team, delta) {
-  if (team === "a") {
-    CURRENT.scoreA = Math.max(0, CURRENT.scoreA + delta);
-    document.getElementById("scoreA").innerText = CURRENT.scoreA;
-  } else {
-    CURRENT.scoreB = Math.max(0, CURRENT.scoreB + delta);
-    document.getElementById("scoreB").innerText = CURRENT.scoreB;
-  }
-}
-
 async function saveScore() {
   const btn = document.getElementById("saveScoreBtn");
 
-  // ✅ instant UI feedback
   btn.disabled = true;
   btn.innerText = "Saving…";
 
@@ -347,33 +301,19 @@ async function saveScore() {
     });
 
     closeModal();
-    render();
+    await render();
 
   } catch (err) {
     console.error(err);
     alert("Failed to save score.");
-
-    // ❌ recover UI if backend fails
     btn.disabled = false;
     btn.innerText = "Save Score";
   }
 }
 
-
 /***********************
  * COMPLETE / CANCEL
  ***********************/
-
-function openCompleteModal(tournamentId) {
-  CURRENT.completeTournamentId = tournamentId;
-  document.getElementById("completeBackdrop").classList.remove("hidden");
-  document.getElementById("completeModal").classList.remove("hidden");
-}
-
-function closeCompleteModal() {
-  document.getElementById("completeBackdrop").classList.add("hidden");
-  document.getElementById("completeModal").classList.add("hidden");
-}
 
 async function confirmCompleteTournament() {
   await apiPost({
@@ -382,18 +322,7 @@ async function confirmCompleteTournament() {
   });
 
   closeCompleteModal();
-  location.reload();
-}
-
-function openCancelModal(tournamentId) {
-  CURRENT.cancelTournamentId = tournamentId;
-  document.getElementById("cancelBackdrop").classList.remove("hidden");
-  document.getElementById("cancelModal").classList.remove("hidden");
-}
-
-function closeCancelModal() {
-  document.getElementById("cancelBackdrop").classList.add("hidden");
-  document.getElementById("cancelModal").classList.add("hidden");
+  await render();
 }
 
 async function confirmCancelTournament() {
@@ -403,5 +332,8 @@ async function confirmCancelTournament() {
   });
 
   closeCancelModal();
-  location.reload();
+  await render();
 }
+
+// ✅ initial load
+render();
