@@ -311,6 +311,38 @@ async function saveScore() {
   }
 }
 
+function openScoreModal(tournament, game, team1, team2) {
+  CURRENT.tournamentId = tournament.tournamentId;
+  CURRENT.gameNumber = game.gameNumber;
+  CURRENT.scoreA = game.scoreTeam1 || 0;
+  CURRENT.scoreB = game.scoreTeam2 || 0;
+
+  document.getElementById("modalTitle").innerText = `Game ${game.gameNumber}`;
+  document.getElementById("modalTeams").innerText = `${team1} vs ${team2}`;
+
+  document.getElementById("scoreA").innerText = CURRENT.scoreA;
+  document.getElementById("scoreB").innerText = CURRENT.scoreB;
+
+  document.getElementById("modalBackdrop").classList.remove("hidden");
+  document.getElementById("scoreModal").classList.remove("hidden");
+}
+
+function closeModal() {
+  document.getElementById("modalBackdrop").classList.add("hidden");
+  document.getElementById("scoreModal").classList.add("hidden");
+}
+
+function changeScore(team, delta) {
+  if (team === "a") {
+    CURRENT.scoreA = Math.max(0, CURRENT.scoreA + delta);
+    document.getElementById("scoreA").innerText = CURRENT.scoreA;
+  } else {
+    CURRENT.scoreB = Math.max(0, CURRENT.scoreB + delta);
+    document.getElementById("scoreB").innerText = CURRENT.scoreB;
+  }
+}
+
+
 /***********************
  * COMPLETE / CANCEL
  ***********************/
