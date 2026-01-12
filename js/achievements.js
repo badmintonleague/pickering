@@ -1,7 +1,10 @@
 const container = document.getElementById("achievements");
 
 (async function renderAchievements() {
-  const rows = await apiGet("getAchievements");
+  const [rows, duos] = await Promise.all([
+    apiGet("getAchievements"),
+    apiGet("getDuos")
+  ]);
 
   container.innerHTML = "";
 
@@ -25,7 +28,10 @@ const container = document.getElementById("achievements");
     rows,
     valueKey: "gamesPlayed"
   });
+
+  // ⛔ Do nothing with `duos` yet (that’s Step 6)
 })();
+
 
 /***********************
  * RENDER HELPERS
