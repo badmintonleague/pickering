@@ -54,11 +54,14 @@ function renderLeaderboard() {
       if (i === 1) card.classList.add("rank-2");
       if (i === 2) card.classList.add("rank-3");
 
+      const pd = p.pf - p.pa;
+      
       card.innerHTML = `
         <strong>#${i + 1} ${name}</strong><br>
         Win PCT: ${(p.winPct * 100).toFixed(1)}%<br>
-        GP: ${p.gamesPlayed}
+        GP: ${p.gamesPlayed} · PD: ${pd > 0 ? "+" : ""}${pd}
       `;
+
 
       card.onclick = () => openPlayerModal(p);
       leaderboardEl.appendChild(card);
