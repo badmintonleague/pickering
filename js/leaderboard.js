@@ -37,7 +37,12 @@ function renderLeaderboard() {
   leaderboardEl.innerHTML = "";
 
   STATS
-    .sort((a, b) => b.winPct - a.winPct)
+    .sort((a, b) =>
+      (b.winPct - a.winPct) ||
+      ((b.pf - b.pa) - (a.pf - a.pa)) ||
+      (b.wins - a.wins)
+    )
+
     .forEach((p, i) => {
       const name = PLAYERS[p.playerId] || `Player ${p.playerId}`;
 
