@@ -55,9 +55,24 @@
     <a href="tournaments.html">Tournaments</a>
     <a href="players.html">Players</a>
     <a href="achievements.html">Achievements</a>
+  
+    <!-- LOCATION SWITCH (BOTTOM) -->
+    <div class="location-switch">
+      <div class="location-row" onclick="toggleLocationMenu()">
+        <span id="currentLocation">Pickering</span>
+        <span class="switch-icon">⇄</span>
+      </div>
+  
+      <div id="locationOptions" class="location-options hidden">
+        <div onclick="switchLocation('scarborough')">Scarborough</div>
+      </div>
+    </div>
   </nav>
 
+
   <script src="js/api.js"></script>
+  <script src="js/leaderboard.js"></script>
+  <script src="js/location.js"></script>
 
   <script>
     /* MENU TOGGLE */
