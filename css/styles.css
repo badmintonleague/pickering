@@ -89,7 +89,7 @@ main {
 #menu a {
   display: block;
   margin-bottom: 12px;
-  color: #0b3f6e;
+  color: #0b6e4f;
   font-weight: bold;
   text-decoration: none;
 }
@@ -438,7 +438,7 @@ main {
   padding: 10px 12px;
   border-radius: 8px;
   background: #f3f4f6;
-  color: #0b3f6e;
+  color: #0b6e4f;
   font-weight: bold;
   cursor: pointer;
 }
