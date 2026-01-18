@@ -15,21 +15,28 @@ menuBtn.onclick = () => menu.classList.toggle("hidden");
  ********************/
 
 (async function initLeaderboard() {
-  const [players, rankings, rankChanges] = await Promise.all([
+  const [players, rankings] = await Promise.all([
     loadPlayers(),
-    apiGet("getRankings"),
-    apiGet("getRankChanges") // 👈 NEW
+    apiGet("getRankings")
   ]);
 
   PLAYERS = players;
   STATS = rankings;
-  RANK_CHANGES = rankChanges || {};
+
+  // Rank changes are optional — do NOT block page load
+  try {
+    RANK_CHANGES = await apiGet("getRankChanges");
+  } catch (e) {
+    console.warn("Rank changes unavailable, continuing without them");
+    RANK_CHANGES = {};
+  }
 
   renderLeaderboard();
 
   // 🔥 Background prefetch (non-blocking)
   prefetchTournaments();
 })();
+
 
 /********************
  * RENDER LEADERBOARD
