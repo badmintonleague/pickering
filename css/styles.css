@@ -469,4 +469,29 @@ main {
 }
 
 
+/* ---------- RANK CHANGE INDICATOR ---------- */
+
+.rank-change {
+  float: right;                 /* push to right side */
+  font-size: 13px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+/* rank up = green */
+.rank-change.rank-up {
+  color: #16a34a;               /* Tailwind green-600 */
+}
+
+/* rank down = red */
+.rank-change.rank-down {
+  color: #dc2626;               /* Tailwind red-600 */
+}
+
+/* no change */
+.rank-change.rank-same {
+  color: #9ca3af;               /* gray-400 */
+}
+
+
 
