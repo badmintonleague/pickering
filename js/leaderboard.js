@@ -43,11 +43,14 @@ async function loadRankSnapshot() {
     rows.forEach(r => {
       RANK_SNAPSHOT[r.playerId] = r.rank;
     });
+
+    renderLeaderboard(); // 🔥 RE-RENDER WITH SNAPSHOT
   } catch (e) {
     console.warn("Rank snapshot unavailable");
     RANK_SNAPSHOT = {};
   }
 }
+
 
 function getRankChange(playerId, currentRank) {
   const prevRank = RANK_SNAPSHOT[playerId];
