@@ -3,6 +3,9 @@ let STATS = [];
 let ALL_TOURNAMENTS = null;
 let TOURNAMENTS_LOADED_AT = 0;
 
+// 🔹 Rank snapshot (baseline)
+let RANK_SNAPSHOT = {};
+
 const leaderboardEl = document.getElementById("leaderboard");
 const menuBtn = document.getElementById("menuBtn");
 const menu = document.getElementById("menu");
@@ -24,10 +27,40 @@ menuBtn.onclick = () => menu.classList.toggle("hidden");
 
   renderLeaderboard();
 
-  // 🔥 Background prefetch (non-blocking)
+  // 🔥 Background tasks (non-blocking)
+  loadRankSnapshot();
   prefetchTournaments();
 })();
 
+/********************
+ * RANK SNAPSHOT
+ ********************/
+
+async function loadRankSnapshot() {
+  try {
+    const rows = await apiGet("getRankSnapshot"); // [{ playerId, rank }]
+    RANK_SNAPSHOT = {};
+    rows.forEach(r => {
+      RANK_SNAPSHOT[r.playerId] = r.rank;
+    });
+  } catch (e) {
+    console.warn("Rank snapshot unavailable");
+    RANK_SNAPSHOT = {};
+  }
+}
+
+function getRankChange(playerId, currentRank) {
+  const prevRank = RANK_SNAPSHOT[playerId];
+
+  if (!prevRank) return { text: "—", cls: "rank-same" };
+
+  const diff = prevRank - currentRank;
+
+  if (diff > 0) return { text: `▲ ${diff}`, cls: "rank-up" };
+  if (diff < 0) return { text: `▼ ${Math.abs(diff)}`, cls: "rank-down" };
+
+  return { text: "—", cls: "rank-same" };
+}
 
 /********************
  * RENDER LEADERBOARD
@@ -42,9 +75,10 @@ function renderLeaderboard() {
       ((b.pf - b.pa) - (a.pf - a.pa)) ||
       (b.wins - a.wins)
     )
-
     .forEach((p, i) => {
       const name = PLAYERS[p.playerId] || `Player ${p.playerId}`;
+      const pd = p.pf - p.pa;
+      const rankChange = getRankChange(p.playerId, i + 1);
 
       const card = document.createElement("div");
       card.className = "card";
@@ -54,14 +88,16 @@ function renderLeaderboard() {
       if (i === 1) card.classList.add("rank-2");
       if (i === 2) card.classList.add("rank-3");
 
-      const pd = p.pf - p.pa;
-      
       card.innerHTML = `
-        <strong>#${i + 1} ${name}</strong><br>
+        <strong>
+          #${i + 1} ${name}
+          <span class="rank-change ${rankChange.cls}">
+            ${rankChange.text}
+          </span>
+        </strong><br>
         Win PCT: ${(p.winPct * 100).toFixed(1)}%<br>
         GP: ${p.gamesPlayed} || PD: ${pd > 0 ? "+" : ""}${pd}
       `;
-
 
       card.onclick = () => openPlayerModal(p);
       leaderboardEl.appendChild(card);
@@ -90,7 +126,6 @@ function openPlayerModal(playerStat) {
   statsEl.classList.remove("hidden");
   matchupsEl.classList.add("hidden");
 
-  // Stats content
   statsEl.innerHTML = `
     <div class="player-stat"><span>Games Played</span><span>${playerStat.gamesPlayed}</span></div>
     <div class="player-stat"><span>Wins</span><span>${playerStat.wins}</span></div>
@@ -100,7 +135,6 @@ function openPlayerModal(playerStat) {
     <div class="player-stat"><span>Points Against</span><span>${playerStat.pa}</span></div>
   `;
 
-  // Tabs
   tabStats.onclick = () => {
     tabStats.classList.add("active");
     tabMatchups.classList.remove("active");
@@ -114,7 +148,6 @@ function openPlayerModal(playerStat) {
     matchupsEl.classList.remove("hidden");
     statsEl.classList.add("hidden");
 
-    // Lazy-load tournaments only once (or every 5 min)
     await loadTournamentsIfNeeded();
     matchupsEl.innerHTML = renderMatchupStats(playerStat.playerId);
   };
@@ -142,9 +175,7 @@ async function loadTournamentsIfNeeded() {
   }
 }
 
-
 function prefetchTournaments() {
-  // already loaded or already fetching
   if (ALL_TOURNAMENTS) return;
 
   apiGet("getTournaments")
@@ -156,7 +187,6 @@ function prefetchTournaments() {
       console.warn("Background tournament prefetch failed", err);
     });
 }
-
 
 /********************
  * MATCHUP STATS
@@ -176,7 +206,7 @@ function renderMatchupStats(playerId) {
 
       const { team1, team2, scoreTeam1, scoreTeam2 } = g;
 
-      // ---- PARTNERS ----
+      // Partners
       if (team1.includes(playerId)) {
         const p = team1.find(x => x !== playerId);
         if (p) {
@@ -195,7 +225,7 @@ function renderMatchupStats(playerId) {
         }
       }
 
-      // ---- OPPONENTS ----
+      // Opponents
       if (team1.includes(playerId)) {
         team2.forEach(o => {
           opponents[o] ??= { gp: 0, l: 0 };
