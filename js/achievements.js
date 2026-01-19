@@ -27,6 +27,14 @@ const container = document.getElementById("achievements");
     valueKey: "longestWinStreak"
   });
 
+  renderTop3({
+    title: "🧊 Clutch Factor",
+    subtitle: "Most sudden-death wins",
+    rows,
+    valueKey: "clutchWins"
+  });
+
+
     // STEP 6: Top Duos (by highest win %)
   renderTopDuos({
     title: "🤝 Top Duos",
