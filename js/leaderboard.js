@@ -55,7 +55,10 @@ async function loadRankSnapshot() {
 function getRankChange(playerId, currentRank) {
   const prevRank = RANK_SNAPSHOT[playerId];
 
-  if (!prevRank) return { text: "—", cls: "rank-same" };
+  // ✅ Correct existence check
+  if (prevRank === undefined) {
+    return { text: "—", cls: "rank-same" };
+  }
 
   const diff = prevRank - currentRank;
 
@@ -64,6 +67,7 @@ function getRankChange(playerId, currentRank) {
 
   return { text: "—", cls: "rank-same" };
 }
+
 
 /********************
  * RENDER LEADERBOARD
