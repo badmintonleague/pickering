@@ -40,7 +40,7 @@ const container = document.getElementById("achievements");
     title: "🤝 Top Duos",
     subtitle: "Highest win %",
     duos,
-    minGames: 3
+    minGames: 4
   });
 
   renderTop3({
