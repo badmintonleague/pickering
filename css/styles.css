@@ -154,11 +154,25 @@ main {
   z-index: 11;
 }
 
+.score-row-group {
+  margin: 12px 0;
+}
+
+.score-team-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  text-align: center;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .score-row {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 12px 0;
   font-size: 24px;
 }
 
