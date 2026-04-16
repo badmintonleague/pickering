@@ -350,7 +350,8 @@ function openScoreModal(tournament, game, team1, team2) {
   CURRENT.scoreB = game.scoreTeam2 || 0;
 
   document.getElementById("modalTitle").innerText = `Game ${game.gameNumber}`;
-  document.getElementById("modalTeams").innerText = `${team1} vs ${team2}`;
+  document.getElementById("modalTeamA").innerText = team1;
+  document.getElementById("modalTeamB").innerText = team2;
 
   document.getElementById("scoreA").innerText = CURRENT.scoreA;
   document.getElementById("scoreB").innerText = CURRENT.scoreB;
