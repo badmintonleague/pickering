@@ -32,9 +32,14 @@ async function render() {
   // load in parallel
   const playersPromise = loadPlayers();
   const tournamentsPromise = getTournamentsCached();
+  const rankingsPromise = apiGet("getRankings");
 
   const players = await playersPromise;
   const data = await tournamentsPromise;
+  const rankings = await rankingsPromise;
+
+  const statsById = {};
+  rankings.forEach(r => (statsById[r.playerId] = r));
 
   container.innerHTML = "";
 
@@ -98,15 +103,27 @@ async function render() {
 
       if (hasScore) gameDiv.classList.add("completed");
 
+      let odds1Html = "";
+      let odds2Html = "";
+
+      if (!hasScore) {
+        const odds = getTeamWinOdds(g.team1, g.team2, statsById);
+        const pct1 = Math.round(odds.p1 * 100);
+        const pct2 = 100 - pct1;
+
+        odds1Html = ` <span class="odds ${pct1 >= pct2 ? "odds-favored" : "odds-underdog"}">(${pct1}%)</span>`;
+        odds2Html = ` <span class="odds ${pct2 > pct1 ? "odds-favored" : "odds-underdog"}">(${pct2}%)</span>`;
+      }
+
       gameDiv.innerHTML = `
         <div>Game ${g.gameNumber}</div>
         <div>
           <span class="team ${team1Won ? "winner" : ""}">
-            ${team1Names}
+            ${team1Names}${odds1Html}
           </span>
           vs
           <span class="team ${team2Won ? "winner" : ""}">
-            ${team2Names}
+            ${team2Names}${odds2Html}
           </span>
           ${hasScore ? ` — ${g.scoreTeam1}:${g.scoreTeam2}` : ""}
         </div>
@@ -138,6 +155,30 @@ async function render() {
 
     container.appendChild(tCard);
   });
+}
+
+/***********************
+ * WIN ODDS (based on career winPct)
+ ***********************/
+
+function getTeamWinOdds(team1, team2, statsById) {
+  const teamStrength = ids => {
+    const vals = ids.map(id => {
+      const s = statsById[id];
+      if (!s || !s.gamesPlayed) return 0.5; // no history yet -> coin flip
+      return Number(s.winPct);
+    });
+    return vals.reduce((a, b) => a + b, 0) / vals.length;
+  };
+
+  const s1 = teamStrength(team1);
+  const s2 = teamStrength(team2);
+  const total = s1 + s2;
+
+  let p1 = total > 0 ? s1 / total : 0.5;
+  p1 = Math.min(0.9, Math.max(0.1, p1)); // never show a "sure thing"
+
+  return { p1, p2: 1 - p1 };
 }
 
 /***********************
