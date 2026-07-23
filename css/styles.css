@@ -507,5 +507,17 @@ main {
   color: #9ca3af;               /* gray-400 */
 }
 
+/* ---------- GAME WIN ODDS ---------- */
 
+.odds {
+  font-size: 13px;
+  font-weight: 600;
+}
 
+.odds-favored {
+  color: #16a34a;               /* Tailwind green-600 */
+}
+
+.odds-underdog {
+  color: #dc2626;               /* Tailwind red-600 */
+}
