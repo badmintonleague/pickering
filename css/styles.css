@@ -827,6 +827,14 @@ input[type="checkbox"] {
   gap: 8px;
 }
 
+.name-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
 .row .name {
   font-family: 'Oswald', sans-serif;
   font-weight: 600;
@@ -834,7 +842,14 @@ input[type="checkbox"] {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
   color: var(--ink);
+}
+
+.champion-badges {
+  flex-shrink: 0;
+  font-size: 12px;
+  letter-spacing: 1px;
 }
 
 .stat-chips {
