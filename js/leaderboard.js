@@ -32,7 +32,7 @@ menuBtn.onclick = () => menu.classList.toggle("hidden");
 
   STATS = await apiGet("getRankings", CURRENT_SEASON === "all" ? {} : { seasonId: CURRENT_SEASON });
 
-  renderSeasonSwitcher();
+  renderSeasonDropdown();
   renderLeaderboard();
 
   // 🔥 Background tasks (non-blocking)
@@ -41,42 +41,49 @@ menuBtn.onclick = () => menu.classList.toggle("hidden");
 })();
 
 /********************
- * SEASON SWITCHER
+ * SEASON DROPDOWN (header)
  ********************/
 
 async function switchSeason(seasonId) {
   CURRENT_SEASON = seasonId;
   STATS = await apiGet("getRankings", seasonId === "all" ? {} : { seasonId });
   renderLeaderboard();
-  renderSeasonSwitcher();
+  renderSeasonDropdown();
+
+  const menu = document.getElementById("seasonDropdownMenu");
+  if (menu) menu.classList.add("hidden");
 }
 
-function renderSeasonSwitcher() {
-  const el = document.getElementById("seasonSwitcher");
-  const eyebrow = document.getElementById("seasonEyebrow");
+function toggleSeasonDropdown(e) {
+  e.stopPropagation();
+  const menu = document.getElementById("seasonDropdownMenu");
+  if (menu) menu.classList.toggle("hidden");
+}
+
+document.addEventListener("click", (e) => {
+  const wrap = document.querySelector(".season-dropdown");
+  const menu = document.getElementById("seasonDropdownMenu");
+  if (wrap && menu && !wrap.contains(e.target)) {
+    menu.classList.add("hidden");
+  }
+});
+
+function renderSeasonDropdown() {
+  const label = document.getElementById("seasonPillLabel");
+  const menu = document.getElementById("seasonDropdownMenu");
 
   const activeSeason = SEASONS.find(s => s.isActive);
   const currentLabel = CURRENT_SEASON === "all"
     ? "All-time"
     : (SEASONS.find(s => s.seasonId === CURRENT_SEASON)?.name || "Season");
 
-  if (eyebrow) {
-    const dayLabel = document.getElementById("currentLocation")?.textContent || "Thursday";
-    eyebrow.textContent = `${dayLabel.toUpperCase()} NIGHT · ${currentLabel.toUpperCase()}`;
-  }
+  if (label) label.textContent = currentLabel.toUpperCase();
+  if (!menu) return;
 
-  if (!el) return;
-
-  el.innerHTML = `
-    <div class="location-row" onclick="document.getElementById('seasonOptions').classList.toggle('hidden')">
-      <span>${currentLabel}</span>
-      <span class="switch-icon">⇄</span>
-    </div>
-    <div id="seasonOptions" class="location-options hidden">
-      ${activeSeason ? `<div onclick="switchSeason(${activeSeason.seasonId})">${activeSeason.name}</div>` : ""}
-      <div onclick="switchSeason('all')">All-time</div>
-      ${SEASONS.filter(s => !s.isActive).map(s => `<div onclick="switchSeason(${s.seasonId})">${s.name}</div>`).join("")}
-    </div>
+  menu.innerHTML = `
+    ${activeSeason ? `<div onclick="switchSeason(${activeSeason.seasonId})">${activeSeason.name}</div>` : ""}
+    <div onclick="switchSeason('all')">All-time</div>
+    ${SEASONS.filter(s => !s.isActive).map(s => `<div onclick="switchSeason(${s.seasonId})">${s.name}</div>`).join("")}
   `;
 }
 
