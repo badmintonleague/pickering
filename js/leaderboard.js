@@ -87,27 +87,28 @@ function renderLeaderboard() {
       const pd = p.pf - p.pa;
       const rankChange = getRankChange(p.playerId, i + 1);
 
-      const card = document.createElement("div");
-      card.className = "card";
-      card.style.cursor = "pointer";
+      const medal = i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : "";
 
-      if (i === 0) card.classList.add("rank-1");
-      if (i === 1) card.classList.add("rank-2");
-      if (i === 2) card.classList.add("rank-3");
+      const row = document.createElement("div");
+      row.className = "row";
 
-      card.innerHTML = `
-        <strong>
-          #${i + 1} ${name}
-          <span class="rank-change ${rankChange.cls}">
-            ${rankChange.text}
-          </span>
-        </strong><br>
-        Win PCT: ${(p.winPct * 100).toFixed(1)}%<br>
-        GP: ${p.gamesPlayed} || PD: ${pd > 0 ? "+" : ""}${pd}
+      row.innerHTML = `
+        <div class="badge ${medal}">${i + 1}</div>
+        <div class="row-main">
+          <div class="row-top">
+            <span class="name">${name}</span>
+            <span class="rank-change ${rankChange.cls}">${rankChange.text}</span>
+          </div>
+          <div class="stat-chips">
+            <div class="chip"><span class="chip-val">${(p.winPct * 100).toFixed(1)}%</span><span class="chip-label">WIN</span></div>
+            <div class="chip"><span class="chip-val">${p.gamesPlayed}</span><span class="chip-label">GP</span></div>
+            <div class="chip"><span class="chip-val ${pd > 0 ? "pos" : pd < 0 ? "neg" : ""}">${pd > 0 ? "+" : ""}${pd}</span><span class="chip-label">PD</span></div>
+          </div>
+        </div>
       `;
 
-      card.onclick = () => openPlayerModal(p);
-      leaderboardEl.appendChild(card);
+      row.onclick = () => openPlayerModal(p);
+      leaderboardEl.appendChild(row);
     });
 }
 

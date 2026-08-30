@@ -1,35 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root {
+  --court-bg: #0d1b23;
+  --court-surface: #142a34;
+  --court-surface-2: #1a333f;
+  --court-line: #26424e;
+  --gold: #e7b23d;
+  --gold-text: #3a2c0b;
+  --silver: #c6d2d6;
+  --silver-text: #22292b;
+  --bronze: #c98a54;
+  --bronze-text: #2e1c0d;
+  --win-green: #35c98d;
+  --loss-red: #ef6a5f;
+  --ink: #eef4f2;
+  --ink-dim: #85a1a6;
+  --ink-faint: #5a747a;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #f7f7f7;
-  color: #222;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--court-bg);
+  color: var(--ink);
 }
 
 .top-bar {
   position: sticky;
   top: 0;
-  z-index: 10; 
-  background: #0b6e4f;
-  color: white;
-  padding: 12px 16px;
+  z-index: 10;
+  background: var(--court-surface);
+  border-bottom: 1px solid var(--court-line);
+  color: var(--ink);
+  padding: 14px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .top-bar h1 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
   font-size: 18px;
+  letter-spacing: 0.01em;
   margin: 0;
 }
 
+.top-bar .eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  margin: 3px 0 0;
+}
+
 .top-bar a {
-  color: white;
+  color: var(--ink);
   text-decoration: none;
   font-size: 20px;
 }
 
 .top-bar a:visited {
-  color: white;
+  color: var(--ink);
 }
 
 .top-bar a:hover {
@@ -40,7 +72,7 @@ body {
 button {
   background: none;
   border: none;
-  color: white;
+  color: var(--ink);
   font-size: 24px;
 }
 
@@ -54,11 +86,12 @@ main {
   padding: 12px;
   margin-bottom: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  color: #222;
 }
 
 .loading {
   text-align: center;
-  color: #777;
+  color: var(--ink-faint);
 }
 
 #menu {
@@ -70,8 +103,9 @@ main {
   /* 🔑 Use viewport height correctly */
   height: calc(100dvh - 56px);
 
-  background: white;
-  box-shadow: -2px 0 6px rgba(0,0,0,0.2);
+  background: var(--court-surface);
+  border-left: 1px solid var(--court-line);
+  box-shadow: -2px 0 6px rgba(0,0,0,0.3);
   z-index: 5;
 
   display: flex;
@@ -89,9 +123,14 @@ main {
 #menu a {
   display: block;
   margin-bottom: 12px;
-  color: #0b6e4f;
-  font-weight: bold;
+  font-family: 'Oswald', sans-serif;
+  color: var(--ink);
+  font-weight: 500;
   text-decoration: none;
+}
+
+#menu a:hover {
+  color: var(--gold);
 }
 
 
@@ -114,10 +153,11 @@ main {
   border: 1px solid #ddd;
   cursor: pointer;
   touch-action: manipulation;
+  color: #222;
 }
 
 .game-card.current {
-  border-left: 5px solid #0b6e4f;
+  border-left: 5px solid var(--win-green);
   font-weight: bold;
 }
 
@@ -139,7 +179,7 @@ main {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
   z-index: 10;
 }
 
@@ -148,7 +188,9 @@ main {
   bottom: 0;
   left: 0;
   right: 0;
-  background: white;
+  background: var(--court-bg);
+  border-top: 1px solid var(--court-line);
+  color: var(--ink);
   padding: 16px;
   border-radius: 16px 16px 0 0;
   z-index: 11;
@@ -162,7 +204,7 @@ main {
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--ink-dim);
   text-align: center;
   margin-bottom: 4px;
   text-transform: uppercase;
@@ -179,14 +221,15 @@ main {
 .score-btn {
   font-size: 28px;
   padding: 8px 16px;
-  color: #0b6e4f;
+  color: var(--gold);
 }
 
 .submit-btn {
   width: 100%;
   padding: 12px;
-  background: #0b6e4f;
-  color: white;
+  background: var(--win-green);
+  color: #072e21;
+  font-weight: bold;
   border-radius: 8px;
   margin-top: 12px;
 }
@@ -200,15 +243,15 @@ main {
   width: 100%;
   padding: 10px;
   margin-top: 8px;
-  color: #666;
+  color: var(--ink-dim);
 }
 
 .complete-btn {
   width: 100%;
   margin-top: 12px;
   padding: 12px;
-  background: #0b6e4f;
-  color: white;
+  background: var(--win-green);
+  color: #072e21;
   border-radius: 8px;
   font-weight: bold;
 }
@@ -217,8 +260,8 @@ main {
   width: 100%;
   margin-top: 12px;
   padding: 12px;
-  background: #b91c1c; /* neutral gray */
-  color: white;
+  background: var(--loss-red); /* red: destructive action */
+  color: #3a0e0a;
   border-radius: 8px;
   font-weight: bold;
 }
@@ -226,8 +269,8 @@ main {
 .success-btn {
   width: 100%;
   padding: 12px;
-  background: #0b6e4f;   /* green */
-  color: white;
+  background: var(--win-green);
+  color: #072e21;
   border-radius: 8px;
   font-weight: bold;
 }
@@ -235,8 +278,8 @@ main {
 .danger-btn {
   width: 100%;
   padding: 12px;
-  background: #b91c1c;   /* red */
-  color: white;
+  background: var(--loss-red);
+  color: #3a0e0a;
   border-radius: 8px;
   font-weight: bold;
 }
@@ -247,8 +290,9 @@ main {
   width: 100%;
   margin-bottom: 16px;
   padding: 12px;
-  background: #6b7280;
-  color: white;
+  background: var(--court-surface-2);
+  border: 1px solid var(--court-line);
+  color: var(--ink);
   border-radius: 8px;
   font-weight: bold;
 }
@@ -257,37 +301,31 @@ main {
 .player-stat {
   display: flex;
   justify-content: space-between;
-  padding: 6px 0;
-  border-bottom: 1px solid #eee;
-  font-size: 15px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--court-line);
+  font-size: 14px;
+  color: var(--ink);
 }
 
 .player-stat:last-child {
   border-bottom: none;
 }
 
+.player-stat span:last-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+}
+
 .rank-1 {
-  background: linear-gradient(
-    135deg,
-    #fff7cc,
-    #f5e6a0
-  );
+  background: linear-gradient(135deg, #fff7cc, #f5e6a0);
 }
 
 .rank-2 {
-  background: linear-gradient(
-    135deg,
-    #f5f5f5,
-    #e0e0e0
-  );
+  background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
 }
 
 .rank-3 {
-  background: linear-gradient(
-    135deg,
-    #fbe5d6,
-    #e7c3a5
-  );
+  background: linear-gradient(135deg, #fbe5d6, #e7c3a5);
 }
 
 .tournament-actions {
@@ -308,6 +346,7 @@ main {
   align-items: center;
   gap: 12px;
   margin-bottom: 6px;
+  color: #222;
 }
 
 /* Stats toggle button */
@@ -329,10 +368,7 @@ main {
   border-radius: 10px;
   padding: 12px;
   margin: 10px 0 16px;
-}
-
-.player-stat {
-  margin-bottom: 8px;
+  color: #222;
 }
 
 .stat-name {
@@ -375,24 +411,26 @@ main {
 
 .tab {
   flex: 1;
-  padding: 12px;                 /* same as buttons */
-  border-radius: 8px;            /* same as buttons */
-  font-size: 15px;               /* matches visual weight */
-  font-weight: bold;
-  border: 1px solid #ddd;
-  background: #f3f3f3;
-  color: #222;
+  padding: 10px;
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  border: 1px solid var(--court-line);
+  background: var(--court-surface);
+  color: var(--ink-dim);
   cursor: pointer;
 
-  display: flex;                 /* centers text perfectly */
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .tab.active {
-  background: #0b6e4f;           /* same green */
-  color: white;
-  border-color: #0b6e4f;
+  background: var(--gold);
+  color: var(--gold-text);
+  border-color: var(--gold);
 }
 
 
@@ -420,16 +458,17 @@ main {
 /* ---------- PARTNERS TAB HEADINGS ---------- */
 
 .partners-title {
-  margin: 14px 0 6px;
-  font-size: 12px;
+  margin: 16px 0 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
   font-weight: 700;
   text-transform: uppercase;
-  color: #6b7280;
-  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+  letter-spacing: 0.08em;
 }
 
 .muted {
-  color: #777;
+  color: var(--ink-faint);
   text-align: center;
   margin: 8px 0;
 }
@@ -451,14 +490,14 @@ main {
   align-items: center;
   padding: 10px 12px;
   border-radius: 8px;
-  background: #f3f4f6;
-  color: #0b6e4f;
+  background: var(--court-surface-2);
+  color: var(--gold);
   font-weight: bold;
   cursor: pointer;
 }
 
 .location-row:hover {
-  background: #e5e7eb;
+  background: var(--court-line);
 }
 
 .switch-icon {
@@ -467,8 +506,8 @@ main {
 
 .location-options {
   margin-top: 8px;
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--court-surface);
+  border: 1px solid var(--court-line);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -476,35 +515,34 @@ main {
 .location-options div {
   padding: 10px 12px;
   cursor: pointer;
+  color: var(--ink);
 }
 
 .location-options div:hover {
-  background: #f3f4f6;
+  background: var(--court-surface-2);
 }
 
 
 /* ---------- RANK CHANGE INDICATOR ---------- */
 
 .rank-change {
-  float: right;                 /* push to right side */
-  font-size: 13px;
-  font-weight: 600;
+  float: right;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
   margin-left: 8px;
 }
 
-/* rank up = green */
 .rank-change.rank-up {
-  color: #16a34a;               /* Tailwind green-600 */
+  color: var(--win-green);
 }
 
-/* rank down = red */
 .rank-change.rank-down {
-  color: #dc2626;               /* Tailwind red-600 */
+  color: var(--loss-red);
 }
 
-/* no change */
 .rank-change.rank-same {
-  color: #9ca3af;               /* gray-400 */
+  color: var(--ink-faint);
 }
 
 /* ---------- GAME WIN ODDS ---------- */
@@ -515,9 +553,117 @@ main {
 }
 
 .odds-favored {
-  color: #16a34a;               /* Tailwind green-600 */
+  color: #16a34a;
 }
 
 .odds-underdog {
-  color: #dc2626;               /* Tailwind red-600 */
+  color: #dc2626;
+}
+
+/* ---------- LEADERBOARD ROWS (fantasy-card look) ---------- */
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--court-surface);
+  border: 1px solid var(--court-line);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.row:active {
+  background: var(--court-surface-2);
+}
+
+.badge {
+  position: relative;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: var(--court-surface-2);
+  border: 1px solid var(--court-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--ink-dim);
+}
+
+.badge.gold {
+  background: var(--gold);
+  color: var(--gold-text);
+  border-color: var(--gold);
+}
+
+.badge.silver {
+  background: var(--silver);
+  color: var(--silver-text);
+  border-color: var(--silver);
+}
+
+.badge.bronze {
+  background: var(--bronze);
+  color: var(--bronze-text);
+  border-color: var(--bronze);
+}
+
+.row-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.row-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.row .name {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ink);
+}
+
+.stat-chips {
+  display: flex;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.chip {
+  display: flex;
+  flex-direction: column;
+}
+
+.chip-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.chip-val.pos {
+  color: var(--win-green);
+}
+
+.chip-val.neg {
+  color: var(--loss-red);
+}
+
+.chip-label {
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  margin-top: 1px;
 }
