@@ -51,14 +51,39 @@ menuBtn.onclick = () => menu.classList.toggle("hidden");
  * SEASON DROPDOWN (header)
  ********************/
 
+let SEASON_LOADING = false;
+
 async function switchSeason(seasonId) {
-  CURRENT_SEASON = seasonId;
-  STATS = await apiGet("getRankings", seasonId === "all" ? {} : { seasonId });
-  renderLeaderboard();
-  renderSeasonDropdown();
+  if (SEASON_LOADING) return;
+  SEASON_LOADING = true;
 
   const menu = document.getElementById("seasonDropdownMenu");
   if (menu) menu.classList.add("hidden");
+
+  const pillBtn = document.getElementById("seasonPillBtn");
+  const pillIcon = document.getElementById("seasonPillIcon");
+  if (pillBtn) pillBtn.disabled = true;
+  if (pillIcon) {
+    pillIcon.textContent = "⟳";
+    pillIcon.classList.add("spinning");
+  }
+  leaderboardEl.classList.add("is-loading");
+
+  CURRENT_SEASON = seasonId;
+
+  try {
+    STATS = await apiGet("getRankings", seasonId === "all" ? {} : { seasonId });
+    renderLeaderboard();
+  } finally {
+    SEASON_LOADING = false;
+    if (pillBtn) pillBtn.disabled = false;
+    if (pillIcon) {
+      pillIcon.textContent = "⌄";
+      pillIcon.classList.remove("spinning");
+    }
+    leaderboardEl.classList.remove("is-loading");
+    renderSeasonDropdown();
+  }
 }
 
 function toggleSeasonDropdown(e) {
