@@ -869,3 +869,120 @@ input[type="checkbox"] {
   color: var(--ink-faint);
   margin-top: 1px;
 }
+
+/* ---------- ACHIEVEMENTS (trophy case) ---------- */
+
+.trophy-card {
+  background: var(--court-surface);
+  border: 1px solid var(--court-line);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.trophy-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.trophy-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--court-surface-2);
+  border: 1px solid var(--court-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+}
+
+.trophy-header h3 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ink);
+  margin: 0;
+}
+
+.trophy-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+  margin: 2px 0 0;
+}
+
+.trophy-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trophy-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mini-badge {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: var(--court-surface-2);
+  border: 1px solid var(--court-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--ink-dim);
+}
+
+.mini-badge.gold {
+  background: var(--gold);
+  color: var(--gold-text);
+  border-color: var(--gold);
+}
+
+.mini-badge.silver {
+  background: var(--silver);
+  color: var(--silver-text);
+  border-color: var(--silver);
+}
+
+.mini-badge.bronze {
+  background: var(--bronze);
+  color: var(--bronze-text);
+  border-color: var(--bronze);
+}
+
+.trophy-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13.5px;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trophy-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.trophy-unit {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 10.5px;
+  color: var(--ink-faint);
+}
