@@ -52,26 +52,38 @@ async function render() {
 
   const active = data.filter(t => t.status === "active");
 
+  const eyebrow = document.getElementById("tournamentsEyebrow");
+  if (eyebrow) {
+    eyebrow.textContent = active.length === 0
+      ? "NO ACTIVE MATCHES"
+      : `${active.length} ACTIVE ${active.length === 1 ? "MATCH" : "MATCHES"}`;
+  }
+
   if (active.length === 0) {
     const msg = document.createElement("p");
+    msg.className = "empty-msg";
     msg.innerText = "No active tournaments.";
-    msg.style.color = "#777";
-    msg.style.textAlign = "center";
     container.appendChild(msg);
     return;
   }
 
   active.forEach(t => {
     const tCard = document.createElement("div");
-    tCard.className = "card";
+    tCard.className = "t-card";
+
+    const completedCount = t.games.filter(g => g.scoreTeam1 || g.scoreTeam2).length;
 
     tCard.innerHTML = `
-      <div class="tournament-header">
-        <strong>Tournament ID: ${t.tournamentId}</strong>
+      <div class="t-header-row">
+        <div class="t-id">
+          <span class="t-label">TOURNAMENT</span>
+          <span class="t-number">#${t.tournamentId}</span>
+        </div>
         <button class="stats-btn">Stats ▾</button>
       </div>
+      <span class="progress-chip">${completedCount} / ${t.games.length} GAMES</span>
       <div class="tournament-stats hidden"></div>
-      <br>
+      <div class="games"></div>
     `;
 
     // STATS TOGGLE
@@ -89,10 +101,12 @@ async function render() {
     };
 
     // GAMES
+    const gamesEl = tCard.querySelector(".games");
+
     t.games.forEach(g => {
       const gameDiv = document.createElement("div");
       gameDiv.className =
-        "game-card" + (g.gameNumber === t.currentGame ? " current" : "");
+        "game-row" + (g.gameNumber === t.currentGame ? " current" : "");
 
       const team1Names = g.team1.map(id => players[id]).join(" + ");
       const team2Names = g.team2.map(id => players[id]).join(" + ");
@@ -105,34 +119,38 @@ async function render() {
 
       let odds1Html = "";
       let odds2Html = "";
+      let centerHtml = `<span class="vs">VS</span>`;
 
       if (!hasScore) {
         const odds = getTeamWinOdds(g.team1, g.team2, statsById);
         const pct1 = Math.round(odds.p1 * 100);
         const pct2 = 100 - pct1;
 
-        odds1Html = ` <span class="odds ${pct1 >= pct2 ? "odds-favored" : "odds-underdog"}">(${pct1}%)</span>`;
-        odds2Html = ` <span class="odds ${pct2 > pct1 ? "odds-favored" : "odds-underdog"}">(${pct2}%)</span>`;
+        odds1Html = `<span class="odds-badge ${pct1 >= pct2 ? "fav" : "dog"}">${pct1}%</span>`;
+        odds2Html = `<span class="odds-badge ${pct2 > pct1 ? "fav" : "dog"}">${pct2}%</span>`;
+      } else {
+        centerHtml = `<span class="score">${g.scoreTeam1}–${g.scoreTeam2}</span>`;
       }
 
       gameDiv.innerHTML = `
-        <div>Game ${g.gameNumber}</div>
-        <div>
-          <span class="team ${team1Won ? "winner" : ""}">
-            ${team1Names}${odds1Html}
-          </span>
-          vs
-          <span class="team ${team2Won ? "winner" : ""}">
-            ${team2Names}${odds2Html}
-          </span>
-          ${hasScore ? ` — ${g.scoreTeam1}:${g.scoreTeam2}` : ""}
+        <div class="game-num">G${g.gameNumber}</div>
+        <div class="matchup">
+          <div class="side ${team1Won ? "win" : ""}">
+            <span class="side-names">${team1Names}</span>
+            ${odds1Html}
+          </div>
+          <div class="vs-score">${centerHtml}</div>
+          <div class="side ${team2Won ? "win" : ""}">
+            <span class="side-names">${team2Names}</span>
+            ${odds2Html}
+          </div>
         </div>
       `;
 
       gameDiv.onclick = () =>
         openScoreModal(t, g, team1Names, team2Names);
 
-      tCard.appendChild(gameDiv);
+      gamesEl.appendChild(gameDiv);
     });
 
     // ACTION BUTTONS
