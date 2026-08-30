@@ -2,6 +2,8 @@ let PLAYERS = {};
 let STATS = [];
 let ALL_TOURNAMENTS = null;
 let TOURNAMENTS_LOADED_AT = 0;
+let SEASONS = [];
+let CURRENT_SEASON = "all";
 
 // 🔹 Rank snapshot (baseline)
 let RANK_SNAPSHOT = {};
@@ -17,20 +19,56 @@ menuBtn.onclick = () => menu.classList.toggle("hidden");
  ********************/
 
 (async function initLeaderboard() {
-  const [players, rankings] = await Promise.all([
+  const [players, rankings, seasons] = await Promise.all([
     loadPlayers(),
-    apiGet("getRankings")
+    apiGet("getRankings"),
+    apiGet("getSeasons")
   ]);
 
   PLAYERS = players;
   STATS = rankings;
+  SEASONS = seasons;
 
+  renderSeasonSwitcher();
   renderLeaderboard();
 
   // 🔥 Background tasks (non-blocking)
   loadRankSnapshot();
   prefetchTournaments();
 })();
+
+/********************
+ * SEASON SWITCHER
+ ********************/
+
+async function switchSeason(seasonId) {
+  CURRENT_SEASON = seasonId;
+  STATS = await apiGet("getRankings", seasonId === "all" ? {} : { seasonId });
+  renderLeaderboard();
+  renderSeasonSwitcher();
+}
+
+function renderSeasonSwitcher() {
+  const el = document.getElementById("seasonSwitcher");
+  if (!el) return;
+
+  const activeSeason = SEASONS.find(s => s.isActive);
+  const currentLabel = CURRENT_SEASON === "all"
+    ? "All-time"
+    : (SEASONS.find(s => s.seasonId === CURRENT_SEASON)?.name || "Season");
+
+  el.innerHTML = `
+    <div class="location-row" onclick="document.getElementById('seasonOptions').classList.toggle('hidden')">
+      <span>${currentLabel}</span>
+      <span class="switch-icon">⇄</span>
+    </div>
+    <div id="seasonOptions" class="location-options hidden">
+      ${activeSeason ? `<div onclick="switchSeason(${activeSeason.seasonId})">${activeSeason.name}</div>` : ""}
+      <div onclick="switchSeason('all')">All-time</div>
+      ${SEASONS.filter(s => !s.isActive).map(s => `<div onclick="switchSeason(${s.seasonId})">${s.name}</div>`).join("")}
+    </div>
+  `;
+}
 
 /********************
  * RANK SNAPSHOT

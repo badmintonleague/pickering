@@ -16,8 +16,9 @@ async function loadPlayers() {
   return PLAYER_MAP;
 }
 
-async function apiGet(action) {
-  const res = await fetch(`${API_URL}?action=${action}`);
+async function apiGet(action, params = {}) {
+  const query = new URLSearchParams({ action, ...params }).toString();
+  const res = await fetch(`${API_URL}?${query}`);
   return res.json();
 }
 
