@@ -19,15 +19,18 @@ menuBtn.onclick = () => menu.classList.toggle("hidden");
  ********************/
 
 (async function initLeaderboard() {
-  const [players, rankings, seasons] = await Promise.all([
+  const [players, seasons] = await Promise.all([
     loadPlayers(),
-    apiGet("getRankings"),
     apiGet("getSeasons")
   ]);
 
   PLAYERS = players;
-  STATS = rankings;
   SEASONS = seasons;
+
+  const activeSeason = SEASONS.find(s => s.isActive);
+  CURRENT_SEASON = activeSeason ? activeSeason.seasonId : "all";
+
+  STATS = await apiGet("getRankings", CURRENT_SEASON === "all" ? {} : { seasonId: CURRENT_SEASON });
 
   renderSeasonSwitcher();
   renderLeaderboard();
@@ -50,12 +53,19 @@ async function switchSeason(seasonId) {
 
 function renderSeasonSwitcher() {
   const el = document.getElementById("seasonSwitcher");
-  if (!el) return;
+  const eyebrow = document.getElementById("seasonEyebrow");
 
   const activeSeason = SEASONS.find(s => s.isActive);
   const currentLabel = CURRENT_SEASON === "all"
     ? "All-time"
     : (SEASONS.find(s => s.seasonId === CURRENT_SEASON)?.name || "Season");
+
+  if (eyebrow) {
+    const dayLabel = document.getElementById("currentLocation")?.textContent || "Thursday";
+    eyebrow.textContent = `${dayLabel.toUpperCase()} NIGHT · ${currentLabel.toUpperCase()}`;
+  }
+
+  if (!el) return;
 
   el.innerHTML = `
     <div class="location-row" onclick="document.getElementById('seasonOptions').classList.toggle('hidden')">
