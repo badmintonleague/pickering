@@ -290,11 +290,13 @@ main {
   width: 100%;
   margin-bottom: 16px;
   padding: 12px;
-  background: var(--court-surface-2);
-  border: 1px solid var(--court-line);
-  color: var(--ink);
+  background: var(--gold);
+  border: none;
+  color: var(--gold-text);
   border-radius: 8px;
-  font-weight: bold;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 
@@ -351,56 +353,218 @@ main {
 
 /* Stats toggle button */
 .stats-btn {
-  font-size: 14px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  background: #e6f2ee;
-  color: #0b6e4f;
-  border: 1px solid #0b6e4f;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: var(--court-surface-2);
+  color: var(--gold);
+  border: 1px solid var(--gold);
   cursor: pointer;
   white-space: nowrap;
 }
 
 /* Boxed stats container */
 .tournament-stats {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background: var(--court-surface-2);
+  border: 1px solid var(--court-line);
   border-radius: 10px;
   padding: 12px;
-  margin: 10px 0 16px;
-  color: #222;
+  margin: 12px 0 16px;
 }
 
 .stat-name {
+  font-family: 'Oswald', sans-serif;
   font-weight: 600;
   font-size: 14px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  color: var(--ink);
 }
 
 .stat-row {
   display: grid;
-  grid-template-columns: repeat(5, 36px);
+  grid-template-columns: repeat(5, 1fr);
   gap: 4px;
   font-size: 13px;
 }
 
 .stat-row div {
-  background: white;
+  background: var(--court-surface);
   border-radius: 5px;
   padding: 4px 0;
   text-align: center;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--court-line);
 }
 
 .stat-row span {
   display: block;
   font-size: 10px;
-  color: #6b7280;
+  color: var(--ink-faint);
 }
 
 .stat-row strong {
+  font-family: 'JetBrains Mono', monospace;
   font-size: 13px;
-  color: #111827;
+  color: var(--ink);
+}
+
+/* ---------- TOURNAMENT CARDS (fantasy-card look) ---------- */
+
+.t-card {
+  background: var(--court-surface);
+  border: 1px solid var(--court-line);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.t-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.t-id {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.t-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+.t-number {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--ink);
+}
+
+.progress-chip {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+  margin-top: 6px;
+}
+
+.games {
+  margin-top: 12px;
+}
+
+.game-row {
+  background: var(--court-surface-2);
+  border: 1px solid var(--court-line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.game-row:last-child {
+  margin-bottom: 0;
+}
+
+.game-row.current {
+  border-color: var(--gold);
+}
+
+.game-row.completed {
+  opacity: 0.75;
+}
+
+.game-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+  margin-bottom: 6px;
+}
+
+.matchup {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.side:last-child {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.side-names {
+  font-size: 13.5px;
+  color: var(--ink-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.side.win .side-names {
+  color: var(--win-green);
+  font-weight: 600;
+}
+
+.vs-score {
+  text-align: center;
+  min-width: 44px;
+}
+
+.vs {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.score {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.odds-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+
+.odds-badge.fav {
+  color: var(--win-green);
+  background: rgba(53, 201, 141, 0.12);
+}
+
+.odds-badge.dog {
+  color: var(--loss-red);
+  background: rgba(239, 106, 95, 0.12);
+}
+
+.empty-msg {
+  color: var(--ink-faint);
+  text-align: center;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--gold);
 }
 
 .modal-tabs {
