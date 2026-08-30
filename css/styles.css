@@ -54,6 +54,44 @@ body {
   margin: 3px 0 0;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.season-dropdown {
+  position: relative;
+}
+
+.season-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--court-surface-2);
+  border: 1px solid var(--court-line);
+  color: var(--ink);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 7px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.season-pill .switch-icon {
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.season-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 150px;
+  z-index: 15;
+}
+
 .top-bar a {
   color: var(--ink);
   text-decoration: none;
