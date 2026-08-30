@@ -4,6 +4,7 @@ let ALL_TOURNAMENTS = null;
 let TOURNAMENTS_LOADED_AT = 0;
 let SEASONS = [];
 let CURRENT_SEASON = "all";
+let PAST_CHAMPIONS = {};
 
 // 🔹 Rank snapshot (baseline)
 let RANK_SNAPSHOT = {};
@@ -19,13 +20,19 @@ menuBtn.onclick = () => menu.classList.toggle("hidden");
  ********************/
 
 (async function initLeaderboard() {
-  const [players, seasons] = await Promise.all([
+  const [players, seasons, pastChampions] = await Promise.all([
     loadPlayers(),
-    apiGet("getSeasons")
+    apiGet("getSeasons"),
+    apiGet("getPastChampions")
   ]);
 
   PLAYERS = players;
   SEASONS = seasons;
+
+  PAST_CHAMPIONS = {};
+  pastChampions.forEach(p => {
+    PAST_CHAMPIONS[p.playerId] = p;
+  });
 
   const activeSeason = SEASONS.find(s => s.isActive);
   CURRENT_SEASON = activeSeason ? activeSeason.seasonId : "all";
@@ -124,6 +131,12 @@ function getRankChange(playerId, currentRank) {
 }
 
 
+function getChampionBadges(playerId) {
+  const m = PAST_CHAMPIONS[playerId];
+  if (!m) return "";
+  return "🥇".repeat(m.gold) + "🥈".repeat(m.silver) + "🥉".repeat(m.bronze);
+}
+
 /********************
  * RENDER LEADERBOARD
  ********************/
@@ -143,6 +156,7 @@ function renderLeaderboard() {
       const rankChange = getRankChange(p.playerId, i + 1);
 
       const medal = i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : "";
+      const champBadges = getChampionBadges(p.playerId);
 
       const row = document.createElement("div");
       row.className = "row";
@@ -151,7 +165,10 @@ function renderLeaderboard() {
         <div class="badge ${medal}">${i + 1}</div>
         <div class="row-main">
           <div class="row-top">
-            <span class="name">${name}</span>
+            <div class="name-wrap">
+              <span class="name">${name}</span>
+              ${champBadges ? `<span class="champion-badges">${champBadges}</span>` : ""}
+            </div>
             <span class="rank-change ${rankChange.cls}">${rankChange.text}</span>
           </div>
           <div class="stat-chips">
